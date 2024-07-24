@@ -14,37 +14,37 @@
 
 ### 1. リポジトリのクローン
 
-まず、リポジトリをローカル環境にクローンします。
+まず、リポジトリをローカル環境にクローンする。
 
-\`\`\`bash
+```bash
 git init
 git clone https://github.com/JunkiUchimi/draft_system.git
 cd draft_system
-\`\`\`
+```
 
 ### 2. 仮想環境のセットアップ
 
 Pythonの仮想環境をセットアップし、必要なパッケージをインストールします。
 
-\`\`\`bash
+```bash
 python -m venv venv
 source venv/bin/activate  # Windowsの場合は `venv\Scripts\activate`
 pip install -r requirements.txt
-\`\`\`
+```
 
 ### 3. シミュレーションの実行
 
 #### 現行ルールに基づくシミュレーション
 
-\`\`\`bash
+```bash
 python scripts/current_rule.py
-\`\`\`
+```
 
 #### 改善案に基づくシミュレーション
 
-\`\`\`bash
+```bash
 python scripts/enhanced_rule.py
-\`\`\`
+```
 
 ### 4. 設定ファイルの編集
 
@@ -54,18 +54,14 @@ python scripts/enhanced_rule.py
 
 シミュレーション結果は`web/index.html`で表示されます。結果を表示するには、ローカルサーバーを起動し、ブラウザで`index.html`を開きます。
 
-\`\`\`bash
+```bash
 cd web
 python -m http.server
-\`\`\`
+```
 
 ブラウザで `http://localhost:8000` を開いて結果を確認します。
 
 ## プロジェクトの目的
 
-このプロジェクトの目的は、現行の現役ドラフト制度をシミュレーションし、その結果を分析することで改善案を提案することです。改善案に基づくシミュレーションを実施することで、より公平かつ効率的なドラフト制度の設計を目指します。
-
-## 貢献
-
-このプロジェクトへの貢献を歓迎します。バグの報告や新しいアイデアの提案など、GitHubのIssueやPull Requestを通じてご連絡ください。
+現行の現役ドラフト制度をシミュレーションし、その結果を分析することで改善案を提案する。改善案に基づくシミュレーションを実施することで、より公平かつ効率的なドラフト制度の設計を目指すこと。
 
