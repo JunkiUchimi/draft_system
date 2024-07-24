@@ -135,8 +135,6 @@ for prefix in teams:
     adeq_cat, adeq_inf, adeq_out, adeq_pit = calculate_position_adequacy(team_name, sorted_players)
     choose_tradees(adeq_out, adeq_pit, adeq_cat, adeq_inf, sorted_players, team_name)
 
-
-
 # tradeeはp_j61': [13.2, '投手'], の形
 # playersは{'a': {'p_a3': [9.4, '捕手'], 'p_a5': [5.4, '捕手'], の形
 # adeq_listは{'a': {'捕手': 8.606666666666667, '内野手': 8.223333333333334, '外野手': 9.373333333333335, '投手': 10.647499999999999}, 

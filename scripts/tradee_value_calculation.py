@@ -24,7 +24,7 @@ for team in adeq_list.keys():
     # ソートした辞書を球団名をキーとして辞書に格納
     tradee_value_dict[team] = sorted_team_tradee_values
 
-print(adeq_list)
+
 # for key, value in tradee_value_dict.items():
 #     print(f"\n{key}: {value}")
 
