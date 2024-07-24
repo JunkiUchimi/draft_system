@@ -1,3 +1,5 @@
+# 改善案のルールに従って記述
+
 from genetest import players, teams, tradee
 from tradee_value_calculation import tradee_value_dict
 
