@@ -1,13 +1,19 @@
 # 改善案のルールに従って記述
 
-import tradee_value_calculation, genetest, copy, pprint
-from genetest import players, teams, adeq_list, calculate_position_adequacy
+from genetest import players, teams, tradee
 from tradee_value_calculation import tradee_value_dict
-tradee_value_dict = tradee_value_calculation.tradee_value_dict
-adeq_list_before = copy.deepcopy(adeq_list)
 
-destination = {chr(i): {} for i in range(ord('a'), ord('m'))}
-adeq_list_after = {}   # 各球団のポジション充実度を格納する辞書
+
+tradee_value_dict = {
+    'a': {'p_b1': [11.5, '捕手', 0.81], 'p_e1': [11.7, '投手', 0.78], 'p_d1': [11.0, '捕手', 0.77]},
+    'b': {'p_c1': [11.7, '投手', 0.83], 'p_a1': [11.5, '捕手', 0.79]},
+    'c': {'p_a1': [11.7, '外野手', 1.29], 'p_b1': [11.1, '外野手', 1.22]},
+    'd': {'p_d1': [9.4, '内野手', 0.8], 'p_b1': [10.7, '投手', 0.76]},    
+    'e': {'p_f1': [11.7, '外野手', 1.29], 'p_a2': [11.1, '外野手', 1.22]},
+    'f': {'p_f1': [9.4, '内野手', 0.8], 'p_b1': [10.7, '投手', 0.76]},
+    # 他のチームも同様に定義
+}
+
 
 
 # tradee_value_dictには各球団の、候補選手に対する評価順に並んだ配列が格納されており、そこから一番最初の選手のIDを取得する関数
@@ -74,7 +80,6 @@ def draft_players(tradee_value_dict, players):
                 if team in tradee_value_dict and player_id in tradee_value_dict[team]:
                     player_info = tradee_value_dict[team][player_id][:2]
                     players[team][player_id] = player_info
-                    destination[team][player_id] = player_info
                 remove_player_from_preferred_dict(preferred_dict, player_id)
 
         # 仮指名をリセットして次のサイクルのチェック
@@ -87,45 +92,15 @@ def draft_players(tradee_value_dict, players):
     return players
 
 
-position_order = {
-    '捕手': 1,
-    '内野手': 2,
-    '外野手': 3,
-    '投手': 4
-}
+
 
 
 # 関数を呼び出して結果を取得
 updated_players = draft_players(tradee_value_dict, players)
-for prefix in teams:
-    players[prefix] = dict(sorted(players[prefix].items(), key=lambda item: (position_order[item[1][1]], -item[1][0])))
-    team_name = prefix  # チーム名を取得
-    sorted_players = players[team_name]
-    # if team_name == "k":
-    #     print(sorted_players)
-    adeq_list_after = calculate_position_adequacy(team_name, sorted_players)
 
-# adeq_list_difを計算
-adeq_list_dif = {}
-adeq_list_dif_sum = {}
-for team in teams:
-    adeq_list_dif[team] = {}
-    for position in adeq_list[team]:
-        adeq_list_dif[team][position] = adeq_list_after[team][position] - adeq_list_before[team][position]
-        adeq_list_dif_sum[team] = sum(adeq_list_dif[team].values())
-
-total_sum = sum(adeq_list_dif_sum.values())
-
-# pprint.pprint(adeq_list_dif)
-print(total_sum)
-# print(destination)
 # players 辞書をキーごとに改行して出力
 # for team, players_list in updated_players.items():
 #     print(f"Team: {team} ({len(players_list)} players)")
 #     for player_id, player_info in players_list.items():
 #         print(f"    {player_id}: {player_info}")
 
-
-
-
-# print(destination)

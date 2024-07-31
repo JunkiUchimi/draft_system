@@ -144,13 +144,7 @@ if len(remaining_teams) == 1:
 for prefix in teams:
     team_name = prefix  # チーム名を取得
     sorted_players = players[team_name]
-    adeq_cat, adeq_inf, adeq_out, adeq_pit = calculate_position_adequacy(team_name, sorted_players)
-    if team_name not in adeq_list_after:
-        adeq_list_after[team_name] = {}
-        adeq_list_after[team_name]["捕手"] = adeq_cat
-        adeq_list_after[team_name]["内野手"] = adeq_inf
-        adeq_list_after[team_name]["外野手"] = adeq_out
-        adeq_list_after[team_name]["投手"] = adeq_pit
+    adeq_list_after = calculate_position_adequacy(team_name, sorted_players)
 
 # 獲得後の結果を表示
 
