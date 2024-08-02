@@ -1,7 +1,6 @@
 # 現役ドラフト制度を実行するファイル
-print("Starting current_rule.py execution...")
 
-import tradee_value_calculation, genetest, copy, pprint
+import tradee_value_calculation, genetest, copy, pprint, json
 from genetest import calculate_position_adequacy
 tradee_value_dict = tradee_value_calculation.tradee_value_dict
 teams = genetest.teams
@@ -11,10 +10,10 @@ adeq_list = genetest.adeq_list
 
 adeq_list_before = copy.deepcopy(adeq_list)
 
-for key, positions in adeq_list_before.items():
-    print(f"Team {key}:")
-    for position, value in positions.items():
-        print(f"  {position}: {value}")
+# for key, positions in adeq_list_before.items():
+#     print(f"Team {key}:")
+#     for position, value in positions.items():
+#         print(f"  {position}: {value}")
 
 adeq_list_after = {}   # 各球団のポジション充実度を格納する辞書
 
@@ -137,7 +136,7 @@ if len(remaining_teams) == 2:
 # 最後に残った球団が他の球団から選手を獲得する
 if len(remaining_teams) == 1:
     last_team = remaining_teams[0]
-#     print(f"球団 {last_team} が最後に残った球団から選手を獲得します。")
+    # print(f"球団 {last_team} が最後に残った球団から選手を獲得します。")
     acquire_players(last_team)
 
 
@@ -152,15 +151,15 @@ for prefix in teams:
     # for player_id, player_info in players[team].items():
     #     print(f"選手ID: {player_id}, 選手情報: {player_info}")
         
-for key, positions in adeq_list_before.items():
-    print(f"Team {key}:")
-    for position, value in positions.items():
-        print(f"  {position}: {value}")
+# for key, positions in adeq_list_before.items():
+#     print(f"Team {key}:")
+#     for position, value in positions.items():
+#         print(f"  {position}: {value}")
 
-for key, positions in adeq_list_after.items():
-    print(f"Team {key}:")
-    for position, value in positions.items():
-        print(f"  {position}: {value}")
+# for key, positions in adeq_list_after.items():
+#     print(f"Team {key}:")
+#     for position, value in positions.items():
+#         print(f"  {position}: {value}")
 
 # adeq_list_difを計算
 adeq_list_dif = {}
@@ -168,13 +167,25 @@ for team in teams:
     adeq_list_dif[team] = {}
     for position in adeq_list[team]:
         adeq_list_dif[team][position] = adeq_list_after[team][position] - adeq_list_before[team][position]
+    total = sum(adeq_list_dif[team].values())
+    adeq_list_dif[team]['合計'] = total
+
+
+adeq_list_dif['合計'] = {'捕手': 0, '内野手': 0, '外野手': 0, '投手': 0, '合計': 0}
+
+# 各ポジションの数値の合計値を計算して格納
+for player in adeq_list_dif.values():
+    for position in ['捕手', '内野手', '外野手', '投手', '合計']:
+        adeq_list_dif['合計'][position] += player[position]
 
 # 結果の確認
 
-pprint.pprint(adeq_list_dif)
+
+# print(adeq_list_dif)
+json_data = json.dumps(adeq_list_dif, ensure_ascii=False)
+print(json_data)
 
 total_sum = sum(sum(positions.values()) for positions in adeq_list_dif.values())
 
-print(total_sum)
-print("Finished current_rule.py execution.")
+# print(total_sum)
 

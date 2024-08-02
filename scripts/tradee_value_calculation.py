@@ -23,7 +23,7 @@ for team in adeq_list.keys():
     sorted_team_tradee_values = dict(sorted(team_tradee_values.items(), key=lambda item: item[1][2], reverse=True))
     # ソートした辞書を球団名をキーとして辞書に格納
     tradee_value_dict[team] = sorted_team_tradee_values
-print(tradee_value_dict["k"])
+
 
 # for key, value in tradee_value_dict.items():
 #     print(f"\n{key}: {value}")

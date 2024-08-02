@@ -1,6 +1,6 @@
 # 改善案のルールに従って記述
 
-import tradee_value_calculation, genetest, copy, pprint
+import tradee_value_calculation, genetest, copy, pprint, json
 from genetest import players, teams, adeq_list, calculate_position_adequacy
 from tradee_value_calculation import tradee_value_dict
 tradee_value_dict = tradee_value_calculation.tradee_value_dict
@@ -63,7 +63,7 @@ def draft_players(tradee_value_dict, players):
         # print(tentative_picks)
         
         cycles = find_cycles(tentative_picks)
-        print(cycles)
+        # print(cycles)
         
         if not cycles:
             break
@@ -112,12 +112,22 @@ for team in teams:
     adeq_list_dif[team] = {}
     for position in adeq_list[team]:
         adeq_list_dif[team][position] = adeq_list_after[team][position] - adeq_list_before[team][position]
-        adeq_list_dif_sum[team] = sum(adeq_list_dif[team].values())
+    total = sum(adeq_list_dif[team].values())
+    adeq_list_dif[team]['合計'] = total
 
-total_sum = sum(adeq_list_dif_sum.values())
+
+adeq_list_dif['合計'] = {'捕手': 0, '内野手': 0, '外野手': 0, '投手': 0, '合計': 0}
+
+# 各ポジションの数値の合計値を計算して格納
+for player in adeq_list_dif.values():
+    for position in ['捕手', '内野手', '外野手', '投手', '合計']:
+        adeq_list_dif['合計'][position] += player[position]
+
+
+json_data = json.dumps(adeq_list_dif, ensure_ascii=False)
+print(json_data)
 
 # pprint.pprint(adeq_list_dif)
-print(total_sum)
 # print(destination)
 # players 辞書をキーごとに改行して出力
 # for team, players_list in updated_players.items():

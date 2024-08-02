@@ -1,199 +1,94 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>Current Rule Execution</title>
+    <title>ルールの実行結果</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-        }
-        .container {
-            width: 80%;
-            margin: 0 auto;
-            background-color: #fff;
-            padding: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            margin-top: 20px;
-        }
-        h1 {
-            text-align: center;
-        }
         table {
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 20px;
         }
-        table, th, td {
-            border: 1px solid #ddd;
-        }
         th, td {
+            border: 1px solid #ddd;
             padding: 8px;
-            text-align: left;
+            text-align: center;
         }
         th {
             background-color: #f2f2f2;
         }
-        .votes-table th, .votes-table td {
-            text-align: center;
-        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Execute Current Rule</h1>
-        <button onclick="executeScript()">Run Script</button>
-        <div id="logOutput"></div>
-    </div>
+    <h1>ルールの実行結果</h1>
+    <button onclick="fetchOutput('current')">現行ルールの結果</button>
+    <button onclick="fetchOutput('enhanced')">強化ルールの結果</button>
+    <div id="output">読み込み中...</div>
 
     <script>
-        async function executeScript() {
-    const response = await fetch('/execute', {
-        method: 'POST'
-    });
-    const log = await response.text();
-    renderOutput(log);
-}
+        async function fetchOutput(rule) {
+            const response = await fetch(`/${rule}_output`);
+            const text = await response.text();  // Parse as text
+            console.log('Received text:', text);  // 受信したテキストを表示
 
-function renderOutput(log) {
-    const outputDiv = document.getElementById('logOutput');
-    outputDiv.innerHTML = '';
-
-    const lines = log.split('\n');
-    let currentTeam = '';
-    let table = null;
-    let tbody = null;
-    let isPlayerList = false;
-    let currentRow = null;
-    let colCount = 0;
-    let voteTable = null;
-    let voteTbody = null;
-    let isVoteSection = false;
-
-    lines.forEach(line => {
-        const voteMatch = line.match(/^球団(\w+): (\d+)票$/);
-        if (voteMatch) {
-            if (!voteTable) {
-                voteTable = document.createElement('table');
-                voteTable.className = 'votes-table';
-                const voteThead = document.createElement('thead');
-                voteThead.innerHTML = `
-                    <tr>
-                        <th>球団</th>
-                        <th>票数</th>
-                    </tr>
-                `;
-                voteTable.appendChild(voteThead);
-                voteTbody = document.createElement('tbody');
-                voteTable.appendChild(voteTbody);
-            }
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td>球団 ${voteMatch[1]}</td>
-                <td>${voteMatch[2]}票</td>
-            `;
-            voteTbody.appendChild(row);
-            isVoteSection = true;
-            return;
-        } else if (isVoteSection && voteTable) {
-            outputDiv.appendChild(voteTable);
-            voteTable = null;
-            isVoteSection = false;
-        }
-
-        const playerMatch = line.match(/^球団 (\w+) が選手 (\w+) を獲得しました。$/);
-        if (playerMatch) {
-            const p = document.createElement('p');
-            p.textContent = line;
-            outputDiv.appendChild(p);
-            return;
-        }
-
-        const generalMatch = line.match(/^球団 (\w+) がまだ獲得していない球団 (\w+) の選手を獲得します。$/);
-        if (generalMatch) {
-            const p = document.createElement('p');
-            p.textContent = line;
-            outputDiv.appendChild(p);
-            return;
-        }
-
-        const generalMatch2 = line.match(/^球団 (\w+) が最後に残った球団から選手を獲得します。$/);
-        if (generalMatch2) {
-            const p = document.createElement('p');
-            p.textContent = line;
-            outputDiv.appendChild(p);
-            return;
-        }
-
-        const teamMatch = line.match(/^球団 (\w+) の選手リスト:/);
-        if (teamMatch) {
-            if (table) {
-                outputDiv.appendChild(table);
-            }
-            currentTeam = teamMatch[1];
-            const teamSection = document.createElement('div');
-            teamSection.innerHTML = `<h2>球団 ${currentTeam}</h2>`;
-            outputDiv.appendChild(teamSection);
-
-            table = document.createElement('table');
-            const thead = document.createElement('thead');
-            thead.innerHTML = `
-                <tr>
-                    <th>選手ID</th>
-                    <th>WAR</th>
-                    <th>選手ID</th>
-                    <th>WAR</th>
-                    <th>選手ID</th>
-                    <th>WAR</th>
-                    <th>選手ID</th>
-                    <th>WAR</th>
-                </tr>
-            `;
-            table.appendChild(thead);
-            tbody = document.createElement('tbody');
-            table.appendChild(tbody);
-            isPlayerList = true;
-            colCount = 0;
-        } else if (table && line.startsWith('選手ID: ')) {
-            const playerInfo = line.match(/^選手ID: (\w+), 選手情報: \[(.+)\]$/);
-            if (playerInfo) {
-                if (colCount === 0) {
-                    currentRow = document.createElement('tr');
+            // メッセージとJSONデータを分離
+            const messages = [];
+            let jsonData = '';
+            text.split('\n').forEach(line => {
+                if (line.startsWith('{') || jsonData) {
+                    jsonData += line;
+                } else {
+                    messages.push(line);
                 }
-                const idCell = document.createElement('td');
-                idCell.textContent = playerInfo[1];
-                const infoCell = document.createElement('td');
-                infoCell.textContent = playerInfo[2];
+            });
 
-                currentRow.appendChild(idCell);
-                currentRow.appendChild(infoCell);
-
-                colCount += 2;
-                if (colCount === 8) {
-                    tbody.appendChild(currentRow);
-                    colCount = 0;
-                }
+            let data;
+            try {
+                data = JSON.parse(jsonData);  // Parse the JSON text
+            } catch (e) {
+                console.error('Failed to parse JSON:', e);
+                document.getElementById('output').textContent = 'データの取得に失敗しました';
+                return;
             }
-        } else {
-            isPlayerList = false;
-        }
-    });
 
-    if (table) {
-        if (colCount > 0 && currentRow) {
-            while (colCount < 8) {
-                const emptyCell = document.createElement('td');
-                currentRow.appendChild(emptyCell);
-                colCount++;
+            const formattedMessages = formatMessages(messages);
+            const formattedData = formatData(data);
+            document.getElementById('output').innerHTML = formattedMessages + formattedData;
+        }
+
+        function roundToTwoDecimalPlaces(num) {
+            return Math.round(num * 100) / 100;
+        }
+
+        function formatMessages(messages) {
+            let formatted = '<div>';
+            messages.forEach(message => {
+                formatted += `<p>${message}</p>`;
+            });
+            formatted += '</div>';
+            return formatted;
+        }
+
+        function formatData(data) {
+            let formatted = '<table>';
+            formatted += '<tr><th>ポジション</th><th>捕手</th><th>内野手</th><th>外野手</th><th>投手</th><th>合計</th></tr>';
+            for (const key in data) {
+                formatted += `<tr><th>${key}</th>`;
+                formatted += `<td>${roundToTwoDecimalPlaces(data[key]['捕手']).toFixed(2)}</td>`;
+                formatted += `<td>${roundToTwoDecimalPlaces(data[key]['内野手']).toFixed(2)}</td>`;
+                formatted += `<td>${roundToTwoDecimalPlaces(data[key]['外野手']).toFixed(2)}</td>`;
+                formatted += `<td>${roundToTwoDecimalPlaces(data[key]['投手']).toFixed(2)}</td>`;
+                formatted += `<td>${roundToTwoDecimalPlaces(data[key]['合計']).toFixed(2)}</td>`;
+                formatted += '</tr>';
             }
-            tbody.appendChild(currentRow);
+            formatted += '</table>';
+            return formatted;
         }
-        outputDiv.appendChild(table);
-    }
-}
 
+        // ページ読み込み時に現行ルールの結果を表示
+        window.onload = function() {
+            fetchOutput('current');
+        }
     </script>
 </body>
 </html>
