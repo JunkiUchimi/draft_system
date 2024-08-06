@@ -1,12 +1,8 @@
 # 現役ドラフト制度を実行するファイル
+from genetest import calculate_position_adequacy, teams, players, tradee, adeq_list
+from tradee_value_calculation import tradee_value_dict
+import copy, pprint, json
 
-import tradee_value_calculation, genetest, copy, pprint, json
-from genetest import calculate_position_adequacy
-tradee_value_dict = tradee_value_calculation.tradee_value_dict
-teams = genetest.teams
-players = genetest.players
-tradee = genetest.tradee
-adeq_list = genetest.adeq_list
 
 adeq_list_before = copy.deepcopy(adeq_list)
 
@@ -175,8 +171,9 @@ adeq_list_dif['合計'] = {'捕手': 0, '内野手': 0, '外野手': 0, '投手'
 
 # 各ポジションの数値の合計値を計算して格納
 for player in adeq_list_dif.values():
-    for position in ['捕手', '内野手', '外野手', '投手', '合計']:
-        adeq_list_dif['合計'][position] += player[position]
+    if player is not adeq_list_dif['合計']:  # '合計' キーのエントリを無視
+        for position in ['捕手', '内野手', '外野手', '投手', '合計']:
+            adeq_list_dif['合計'][position] += player[position]
 
 # 結果の確認
 

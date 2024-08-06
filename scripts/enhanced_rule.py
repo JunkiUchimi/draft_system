@@ -120,8 +120,9 @@ adeq_list_dif['合計'] = {'捕手': 0, '内野手': 0, '外野手': 0, '投手'
 
 # 各ポジションの数値の合計値を計算して格納
 for player in adeq_list_dif.values():
-    for position in ['捕手', '内野手', '外野手', '投手', '合計']:
-        adeq_list_dif['合計'][position] += player[position]
+    if player is not adeq_list_dif['合計']:  # '合計' キーのエントリを無視
+        for position in ['捕手', '内野手', '外野手', '投手', '合計']:
+            adeq_list_dif['合計'][position] += player[position]
 
 
 json_data = json.dumps(adeq_list_dif, ensure_ascii=False)

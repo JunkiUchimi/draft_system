@@ -3,15 +3,11 @@
 import pickle
 
 # genetest.pyの内容をインポートして実行
-import genetest
-
-# genetest.pyから必要な変数を取得
-adeq_list = genetest.adeq_list  # 各球団のポジション充実度を表す辞書
-tradee = genetest.tradee        # トレード対象の選手リスト (選手の値, ポジション)
+from genetest import adeq_list, tradee, teams
 
 # 各球団ごとにtradeeの値をポジション充実度で割ったものを格納する
 tradee_value_dict = {}
-for team in adeq_list.keys():
+for team in teams:
     team_tradee_values = {}
     for player_id, player_info in tradee.items():
         position = player_info[1]  # 選手のポジションを取得
