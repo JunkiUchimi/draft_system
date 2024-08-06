@@ -3,7 +3,7 @@
 import pickle
 
 # genetest.pyの内容をインポートして実行
-from genetest import adeq_list, tradee, teams
+from genetest import adeq_list, tradee, teams, players
 
 # 各球団ごとにtradeeの値をポジション充実度で割ったものを格納する
 tradee_value_dict = {}
@@ -11,6 +11,8 @@ for team in teams:
     team_tradee_values = {}
     for player_id, player_info in tradee.items():
         position = player_info[1]  # 選手のポジションを取得
+        
+
         # 選手の値を球団のポジション充実度で割る
         value = round(player_info[0] / adeq_list[team][position], 2)
         # 選手IDをキーとしてリストを辞書に追加
