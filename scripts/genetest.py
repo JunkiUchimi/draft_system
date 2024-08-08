@@ -1,6 +1,6 @@
 import random
 import json
-# from players import players
+
 
 # 設定ファイルを読み込む
 with open('config/config.json', 'r', encoding='utf-8') as config_file:
@@ -11,6 +11,14 @@ tradee = {}      # トレード対象の選手を格納する辞書
 adeq_list = {}   # 各球団のポジション充実度を格納する辞書
 teams = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l']    # 12球団のリスト
 players = {}
+# from players import players
+
+def sort_player(team_players):
+    sorted_players = {}
+    for player_id, value in team_players.items():
+        sorted_players.update({player[0]: [player[1], player_id] for player in sorted(value, key=lambda x: x[1], reverse=True)})
+    return sorted_players
+
 
 # Define the generate_player function
 def generate_player(position_prefix, num_players):
@@ -25,16 +33,16 @@ def generate_player(position_prefix, num_players):
         if position not in team_players:
             team_players[position] = []  # ポジションがまだ存在しない場合、新たにリストを作成
         team_players[position].append((key, random_number))  # 選手情報をリストに追加
-
+    sorted_player = sort_player(team_players)
+    # print(sorted_player)
+    return sorted_player
     # 各ポジションごとに選手を数値で降順にソート
-    sorted_players = {}
-    for position, player_list in team_players.items():
-        sorted_players.update({player[0]: [player[1], position] for player in sorted(player_list, key=lambda x: x[1], reverse=True)})
-    return sorted_players
+
 
 
 # ポジション充実度を計算する関数
 def calculate_position_adequacy(team_name, sorted_players):
+    # print(sorted_players)
     catchers = []
     infielders = []
     outfielders = []
@@ -143,7 +151,7 @@ for prefix in teams:
     adeq_list = calculate_position_adequacy(team_name, sorted_players)
     choose_tradees(sorted_players, team_name, adeq_list)
 
-
+# print(players)
 # print(f"候補選手一覧：{tradee}")
 # print("ポジション充実度リストは" + json.dumps(adeq_list, ensure_ascii=False, indent=2))
 # print(players)

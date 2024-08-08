@@ -1,6 +1,6 @@
 # 現役ドラフト制度を実行するファイル
 from genetest import calculate_position_adequacy, teams, players, tradee, adeq_list
-from tradee_value_calculation import tradee_value_dict
+from tradee_value_calculation import position_order, tradee_value_dict
 import copy, pprint, json
 
 
@@ -16,12 +16,7 @@ adeq_list_after = {}   # 各球団のポジション充実度を格納する辞�
 
 # 各球団の票を記録する辞書
 votes = {team: 0 for team in teams}
-position_order = {
-    '捕手': 1,
-    '内野手': 2,
-    '外野手': 3,
-    '投手': 4
-}
+
 
 # 各チームの tradee_value_dict を処理する
 for team, player_values in tradee_value_dict.items():
@@ -178,11 +173,11 @@ for player in adeq_list_dif.values():
 # 結果の確認
 
 
-# print(adeq_list_dif)
+# print(adeq_list_dif['合計']['合計'])
 json_data = json.dumps(adeq_list_dif, ensure_ascii=False)
 print(json_data)
 
-total_sum = sum(sum(positions.values()) for positions in adeq_list_dif.values())
+# total_sum = sum(sum(positions.values()) for positions in adeq_list_dif.values())  
 
 # print(total_sum)
 

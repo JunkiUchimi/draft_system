@@ -127,7 +127,7 @@ for player in adeq_list_dif.values():
 
 json_data = json.dumps(adeq_list_dif, ensure_ascii=False)
 print(json_data)
-
+# print(adeq_list_dif['合計']['合計'])
 # pprint.pprint(adeq_list_dif)
 # print(destination)
 # players 辞書をキーごとに改行して出力
