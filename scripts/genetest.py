@@ -1,5 +1,6 @@
 import random
 import json
+import copy
 
 
 # 設定ファイルを読み込む
@@ -149,9 +150,13 @@ for prefix in teams:
     team_name = prefix  # チーム名を取得
     calculate_position_adequacy(team_name, sorted_players)
     adeq_list = calculate_position_adequacy(team_name, sorted_players)
+    # print(adeq_list)
     choose_tradees(sorted_players, team_name, adeq_list)
+    
+adeq_list_before = copy.deepcopy(adeq_list)
+# print(adeq_list['l'])
 
-# print(players)
+# print(players['l'])
 # print(f"候補選手一覧：{tradee}")
 # print("ポジション充実度リストは" + json.dumps(adeq_list, ensure_ascii=False, indent=2))
 # print(players)

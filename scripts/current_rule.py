@@ -1,10 +1,8 @@
 # 現役ドラフト制度を実行するファイル
-from genetest import calculate_position_adequacy, teams, players, tradee, adeq_list
+from genetest import calculate_position_adequacy, teams, players, tradee, adeq_list, adeq_list_before
 from tradee_value_calculation import position_order, tradee_value_dict
 import copy, pprint, json
 
-
-adeq_list_before = copy.deepcopy(adeq_list)
 
 # for key, positions in adeq_list_before.items():
 #     print(f"Team {key}:")

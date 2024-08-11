@@ -1,10 +1,11 @@
 # 改善案のルールに従って記述
 
 import tradee_value_calculation, genetest, copy, pprint, json
-from genetest import players, teams, adeq_list, calculate_position_adequacy
+from genetest import players, teams, adeq_list, calculate_position_adequacy, adeq_list_before
 from tradee_value_calculation import tradee_value_dict
 tradee_value_dict = tradee_value_calculation.tradee_value_dict
-adeq_list_before = copy.deepcopy(adeq_list)
+
+# print(adeq_list_before['l'])
 
 destination = {chr(i): {} for i in range(ord('a'), ord('m'))}
 adeq_list_after = {}   # 各球団のポジション充実度を格納する辞書
@@ -101,9 +102,11 @@ for prefix in teams:
     players[prefix] = dict(sorted(players[prefix].items(), key=lambda item: (position_order[item[1][1]], -item[1][0])))
     team_name = prefix  # チーム名を取得
     sorted_players = players[team_name]
-    # if team_name == "k":
-    #     print(sorted_players)
+    # if team_name == "l":
+        # print(sorted_players)
     adeq_list_after = calculate_position_adequacy(team_name, sorted_players)
+    # if team_name == 'l':
+        # print(adeq_list['l'])
 
 # adeq_list_difを計算
 adeq_list_dif = {}
@@ -117,15 +120,16 @@ for team in teams:
 
 
 adeq_list_dif['合計'] = {'捕手': 0, '内野手': 0, '外野手': 0, '投手': 0, '合計': 0}
-
 # 各ポジションの数値の合計値を計算して格納
 for player in adeq_list_dif.values():
     if player is not adeq_list_dif['合計']:  # '合計' キーのエントリを無視
         for position in ['捕手', '内野手', '外野手', '投手', '合計']:
             adeq_list_dif['合計'][position] += player[position]
-
+# print(players['l'])
 
 json_data = json.dumps(adeq_list_dif, ensure_ascii=False)
+# print(adeq_list_before['l'])
+# print(adeq_list_after['l'])
 print(json_data)
 # print(adeq_list_dif['合計']['合計'])
 # pprint.pprint(adeq_list_dif)

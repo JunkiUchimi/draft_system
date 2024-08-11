@@ -1,6 +1,6 @@
 # トレード候補選手をそのチームの評価値順に並べる。計算は（WAR/ポジション充実度）
 
-import pickle
+import pickle, pprint
 
 # genetest.pyの内容をインポートして実行
 import genetest
@@ -49,16 +49,21 @@ for team in teams:
     for player_id, player_info in tradee.items():
         position = player_info[1]  # 選手のポジションを取得
         players[team][player_id] = player_info
+
         sorted_players = dict(sorted(players[team].items(), key=lambda item: (position_order[item[1][1]], -item[1][0])))
+
         del players[team][player_id]
         adeq_list = {}   # 各球団のポジション充実度を格納する辞書
         adeq_list = calculate_position_adequacy(team, sorted_players)
+        # print(adeq_list[team])
         # print(f"team {team} {adeq_list[team]}")
         total = 0
         for posi in adeq_list[team].keys():
-            total += adeq_list[team][position]
+            total += adeq_list[team][posi]
+        # print(total)
         value = total - total_before
-
+        # if team == 'l':
+            # print(value)
         # print(total)
         # print(total_before)
         # print(f'{team}は{value}')
