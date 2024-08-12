@@ -2,5 +2,9 @@
     "multiplier_1": 13,
     "multiplier_2": 5,
     "multiplier_3": 2,
-    "multiplier_4": 0
+    "multiplier_4": 0,
+    "cat_number": 2,
+    "inf_number": 13,
+    "out_number": 27,
+    "pit_number": 46
 }

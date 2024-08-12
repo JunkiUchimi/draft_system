@@ -55,20 +55,11 @@ for team in teams:
         del players[team][player_id]
         adeq_list = {}   # 各球団のポジション充実度を格納する辞書
         adeq_list = calculate_position_adequacy(team, sorted_players)
-        # print(adeq_list[team])
-        # print(f"team {team} {adeq_list[team]}")
         total = 0
         for posi in adeq_list[team].keys():
             total += adeq_list[team][posi]
-        # print(total)
         value = total - total_before
-        # if team == 'l':
-            # print(value)
-        # print(total)
-        # print(total_before)
-        # print(f'{team}は{value}')
-        # if team == '':
-        #     print(value)
+      
 
         # 選手IDをキーとしてリストを辞書に追加
         team_tradee_values[player_id] = [player_info[0], position, value]
@@ -76,15 +67,3 @@ for team in teams:
     sorted_team_tradee_values = dict(sorted(team_tradee_values.items(), key=lambda item: item[1][2], reverse=True))
     # ソートした辞書を球団名をキーとして辞書に格納
     tradee_value_dict[team] = sorted_team_tradee_values
-# print(tradee)
-# print(tradee_value_dict)
-# print(tradee_value_dict['l'])
-
-# for key, value in tradee_value_dict.items():
-#     print(f"\n{key}: {value}")
-
-# 新しいファイルにtradee_value_dictを保存
-# with open('/mnt/data/tradee_value_dict.pkl', 'wb') as f:
-#     pickle.dump(tradee_value_dict, f)  # tradee_value_dictをpickle形式で保存
-
-#tradee_value_dictは以下の形式になる。{'a': {'p_k26': [12.2, '外野手', 1.7509169191516503], ...

@@ -5,10 +5,9 @@ from genetest import players, teams, adeq_list, calculate_position_adequacy, ade
 from tradee_value_calculation import tradee_value_dict
 tradee_value_dict = tradee_value_calculation.tradee_value_dict
 
-
-# destination = {chr(i): {} for i in range(ord('a'), ord('m'))}
+destination = {chr(i): {} for i in range(ord('a'), ord('m'))}
 adeq_list_after = {}   # 各球団のポジション充実度を格納する辞書
-
+tradee_temp = {chr(i): {} for i in range(ord('a'), ord('m'))}
 
 # tradee_value_dictには各球団の、候補選手に対する評価順に並んだ配列が格納されており、そこから一番最初の選手のIDを取得する関数
 def generate_preferred_dict(tradee_value_dict):
@@ -73,8 +72,7 @@ def draft_players(tradee_value_dict, players):
                 player_id = tentative_picks[team]
                 if team in tradee_value_dict and player_id in tradee_value_dict[team]:
                     player_info = tradee_value_dict[team][player_id][:2]
-                    players[team][player_id] = player_info
-                    # destination[team][player_id] = player_info
+                    tradee_temp[team][player_id] = player_info
                 remove_player_from_preferred_dict(preferred_dict, player_id)
 
         # 仮指名をリセットして次のサイクルのチェック
@@ -94,36 +92,43 @@ position_order = {
     '投手': 4
 }
 
-
+# ここから新たなルールを追加
 # 関数を呼び出して結果を取得
 updated_players = draft_players(tradee_value_dict, players)
-for prefix in teams:
-    players[prefix] = dict(sorted(players[prefix].items(), key=lambda item: (position_order[item[1][1]], -item[1][0])))
-    team_name = prefix  # チーム名を取得
-    sorted_players = players[team_name]
-
-    adeq_list_after = calculate_position_adequacy(team_name, sorted_players)
-
-
-# adeq_list_difを計算
-adeq_list_dif = {}
-adeq_list_dif_sum = {}
+tradee_value_dict = {}
+team_tradee_values = {chr(i): {} for i in range(ord('a'), ord('m'))}
 for team in teams:
-    adeq_list_dif[team] = {}
-    for position in adeq_list[team]:
-        adeq_list_dif[team][position] = adeq_list_after[team][position] - adeq_list_before[team][position]
-    total = sum(adeq_list_dif[team].values())
-    adeq_list_dif[team]['合計'] = total
+    
+    total_before = 0
+    for position in adeq_list[team].keys():
+        total_before += adeq_list_before[team][position]
+    for cal_team, infos in tradee_temp.items():
+        # position = player_info[1]  # 選手のポジションを取得
+        # 各選手のplayer_idとその情報をループで回す
+        for player_id, player_info in infos.items():
+            # players[team] に player_id をキーとして追加
+            players[team][player_id] = player_info
 
+        sorted_players = dict(sorted(players[team].items(), key=lambda item: (position_order[item[1][1]], -item[1][0])))
+        for player_id, player_info in infos.items():
+            del players[team][player_id]
+        
+        adeq_list = {}   # 各球団のポジション充実度を格納する辞書
+        adeq_list = calculate_position_adequacy(team, sorted_players)
+        total = 0
+        for posi in adeq_list[team].keys():
+            total += adeq_list[team][posi]
+        value = total - total_before
 
-adeq_list_dif['合計'] = {'捕手': 0, '内野手': 0, '外野手': 0, '投手': 0, '合計': 0}
-# 各ポジションの数値の合計値を計算して格納
-for player in adeq_list_dif.values():
-    if player is not adeq_list_dif['合計']:  # '合計' キーのエントリを無視
-        for position in ['捕手', '内野手', '外野手', '投手', '合計']:
-            adeq_list_dif['合計'][position] += player[position]
+        # 選手IDをキーとしてリストを辞書に追加
+        team_tradee_values[team][cal_team] = value
+    # 計算した値で降順にソート
 
+    # 内側の辞書を数値の降順でソートする
+sorted_team_tradee_values = {
+    team: dict(sorted(values.items(), key=lambda item: item[1], reverse=True))
+    for team, values in team_tradee_values.items()
+}
+print(tradee_temp)
+print(sorted_team_tradee_values)
 
-json_data = json.dumps(adeq_list_dif, ensure_ascii=False)
-
-print(json_data)

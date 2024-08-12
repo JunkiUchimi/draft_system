@@ -128,7 +128,7 @@ def choose_tradees(sorted_players, team_name, adeq_list):
     adeq_pit = adeq_list[team_name]["投手"]
     # 上位2つの数値を見つける
     # ポジション, ポジション充実度, 候補の候補選手の配列番号（ここから充実度の高いポジションの2人が選ばれる）
-    adeq_values = [("捕手", adeq_cat, 2), ("内野手", adeq_inf, 12), ("外野手", adeq_out, 27), ("投手", adeq_pit, 44)]
+    adeq_values = [("捕手", adeq_cat, config['cat_number']), ("内野手", adeq_inf, config['inf_number']), ("外野手", adeq_out, config['out_number']), ("投手", adeq_pit, config['pit_number'])]
     top_two = sorted(adeq_values, key=lambda x: x[1], reverse=True)[:2]
     # added_player_keysを生成
     added_player_keys = [key for idx, key in enumerate(sorted_players) if idx in {top_two[0][2], top_two[1][2]}]
@@ -154,14 +154,6 @@ for prefix in teams:
     choose_tradees(sorted_players, team_name, adeq_list)
     
 adeq_list_before = copy.deepcopy(adeq_list)
-# print(adeq_list['l'])
-
-# print(players['l'])
-# print(f"候補選手一覧：{tradee}")
-# print("ポジション充実度リストは" + json.dumps(adeq_list, ensure_ascii=False, indent=2))
-# print(players)
-# print(tradee)
-# print(adeq_list["k"])
 # tradeeはp_j61': [13.2, '投手'], の形
 # playersは{'a': {'p_a3': [9.4, '捕手'], 'p_a5': [5.4, '捕手'], の形
 # adeq_listは{'a': {'捕手': 8.606666666666667, '内野手': 8.223333333333334, '外野手': 9.373333333333335, '投手': 10.647499999999999}, 
