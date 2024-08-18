@@ -178,4 +178,3 @@ print(json_data)
 # total_sum = sum(sum(positions.values()) for positions in adeq_list_dif.values())  
 
 # print(total_sum)
-

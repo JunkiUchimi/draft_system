@@ -125,10 +125,116 @@ for team in teams:
     # 計算した値で降順にソート
 
     # 内側の辞書を数値の降順でソートする
-sorted_team_tradee_values = {
+tradee_value_pair_dict = {
     team: dict(sorted(values.items(), key=lambda item: item[1], reverse=True))
     for team, values in team_tradee_values.items()
 }
-print(tradee_temp)
-print(sorted_team_tradee_values)
+for team, players_to_remove in tradee_value_pair_dict.items():
+    for player_key in players_to_remove:
+        if player_key in players[team]:
+            del players[team][player_key]
+# tradee_value_pair_dict = {'a': {'c': 2.625, 'i': 0.7614583333333371, 'g': 0.40625, 'a': 0.125, 'h': 0.08125000000001137, 'b': -0.078125, 'l': -0.2291666666666572, 'k': -1.84375, 'j': -2.3999999999999773, 'd': -2.619791666666657, 'e': -2.6531249999999886, 'f': -2.7750000000000057}, 'b': {'c': 12.418749999999989, 'g': 6.696874999999977, 'b': 5.712499999999977, 'h': 4.712499999999977, 'i': 0.5729166666666288, 'a': 0.078125, 'l': -0.05208333333337123, 'k': -0.7489583333333485, 'e': -0.7750000000000341, 'j': -1.1437500000000114, 'f': -1.196875000000034, 'd': -1.25}, 'c': {'c': 1.424999999999983, 'h': -0.06874999999999432, 'g': -0.4906249999999943, 'b': -1.125, 'i': -3.731250000000017, 'j': -3.950000000000017, 'l': -4.200000000000017, 'e': -4.40625, 'a': -4.426041666666691, 'f': -4.715625000000017, 'k': -4.853125000000006, 'd': -5.337500000000006}, 'd': {'c': 8.64270833333336, 'g': 5.567708333333343, 'h': 5.3552083333333655, 'i': 4.831250000000011, 'l': 4.578125, 'b': 4.508333333333354, 'a': 3.9447916666666742, 'j': 1.3239583333333371, 'k': 0.9510416666666401, 'd': 0.0, 'f': -0.038541666666645824, 'e': -0.28229166666667993}, 'e': {'c': 9.587499999999977, 'g': 6.559375000000017, 'h': 5.725000000000023, 'b': 5.525000000000006, 'i': 2.3020833333333144, 'l': 1.8604166666667084, 'a': 1.440624999999983, 'j': 0.8562499999999886, 'k': 0.31354166666667993, 'e': 0.04374999999998863, 'f': 0.015625, 'd': -0.2874999999999943}, 'f': {'c': 6.59375, 'i': 4.259375000000034, 'l': 3.7687500000000114, 'g': 3.6875, 'a': 3.42291666666668, 'b': 2.6781249999999943, 'h': 2.5875000000000057, 'j': 1.081249999999983, 'k': 0.7125000000000057, 'f': 0.0, 'd': -0.1885416666666515, 'e': -0.2718749999999943}, 'g': {'c': 1.1781250000000227, 'h': 0.6468750000000227, 'g': 0.0, 'i': -0.053124999999965894, 'b': -0.484375, 'a': -0.689583333333303, 'l': -0.7218750000000114, 'j': -1.8781249999999545, 'k': -2.433333333333337, 'f': -2.6875, 'e': -2.8093749999999886, 'd': -2.8843749999999773}, 'h': {'c': 2.575000000000017, 'i': 0.27916666666666856, 'g': 0.21562499999998863, 'h': 0.0, 'b': -0.3687500000000057, 'a': -0.5072916666666742, 'l': -0.6020833333333258, 'k': -2.0677083333333144, 'j': -2.143749999999983, 'e': -2.706249999999983, 'f': -2.8656249999999943, 'd': -2.9187499999999886}, 'i': {'c': 2.0125000000000455, 'i': 0.32916666666670835, 'h': 0.2812500000000284, 'g': 0.078125, 'a': -0.30729166666662877, 'l': -0.38333333333329733, 'b': -0.40625, 'j': -2.349999999999966, 'k': -2.609374999999943, 'f': -3.146874999999966, 'e': -3.2968749999999716, 'd': -3.3854166666666288}, 'j': {'c': 5.701041666666669, 'i': 3.1937499999999943, 'g': 2.8885416666666686, 'l': 2.7906250000000057, 'h': 2.75104166666668, 'a': 2.557291666666657, 'b': 1.9041666666666686, 'j': 0.6572916666666799, 'k': -0.078125, 'f': -0.5677083333333428, 'e': -0.6395833333333201, 'd': -0.7291666666666572}, 'k': {'c': 6.278125000000017, 'i': 3.796875, 'g': 3.525000000000034, 'l': 3.44062500000004, 'a': 3.160416666666663, 'h': 2.78437500000004, 'b': 2.559375000000017, 'k': 0.591666666666697, 'j': 0.4531250000000284, 'd': -0.16562499999997726, 'f': -0.703125, 'e': -1.0781249999999716}, 'l': {'i': 0.7562499999999943, 'c': 0.3395833333333371, 'a': 0.11979166666665719, 'l': 0.0, 'g': -0.6697916666666686, 'h': -1.0229166666666742, 'j': -1.1791666666666742, 'k': -1.5156249999999716, 'b': -1.5541666666666458, 'f': -1.7010416666666686, 'e': -1.7541666666666345, 'd': -2.041666666666657}}
+# print(tradee_temp)
+# print(tradee_value_pair_dict)
+# 最初のキーを取得して新しい辞書を作成
+tradee_pair_temp = {chr(i): {} for i in range(ord('a'), ord('m'))}
+def generate_first_key_team(tradee_value_pair_dict):
+    first_keys_team = {}
+    for outer_key, inner_dict in tradee_value_pair_dict.items():
+        if inner_dict:  # inner_dictが空でない場合のみ処理を行う
+            first_keys_team[outer_key] = list(inner_dict.keys())[0]
+    return first_keys_team
 
+def remove_player_from_first_keys_team(tradee_value_pair_dict, selected_team):
+    for base_team, preferred in tradee_value_pair_dict.items():
+        if selected_team in preferred:
+            preferred.pop(selected_team)
+    return
+# print()
+
+# print(first_keys_team)
+# first_keys_team = {'a': 'b', 'b': 'c', 'c': 'g', 'd': 'j', 'e': 'j', 'f': 'j', 'g': 'a', 'h': 'j', 'i': 'j', 'j': 'j', 'k': 'c', 'l': 'j'}
+def find_pair_cycles(first_keys_team):
+    pair_cycles = []
+    visited = set()
+    for team in teams:
+        if team not in visited:
+            cycle = []
+            current_team = team
+            while current_team not in visited and current_team in first_keys_team:
+                visited.add(current_team)
+                cycle.append(current_team)
+                current_team = first_keys_team[current_team]
+                
+                if current_team in cycle:
+                    cycle_start = cycle.index(current_team)
+                    pair_cycles.append(cycle[cycle_start:])
+                    break
+    return pair_cycles
+
+# print(tradee_value_pair_dict)
+def draft_pair_players(tradee_value_pair_dict, players):
+    first_keys_team = generate_first_key_team(tradee_value_pair_dict)
+    
+    while True:
+        pair_cycles = find_pair_cycles(first_keys_team)
+        
+        if not pair_cycles:
+            break
+        
+        for cycle in pair_cycles:
+            for team in cycle:
+                # サイクルに含まれるチームの選手をplayersに追加
+                if team in tradee_value_pair_dict:
+                    # 選手を追加
+                    for player_id, player_info in tradee_temp[team].items():
+                        players[team][player_id] = player_info
+                
+                # 次のチームに対する処理
+                next_team = first_keys_team[team]
+                if team in tradee_value_pair_dict and next_team in tradee_value_pair_dict[team]:
+                    team_info = tradee_value_pair_dict[team][next_team]
+                    tradee_temp[team][next_team] = team_info
+
+                remove_player_from_first_keys_team(tradee_value_pair_dict, next_team)
+
+        # サイクルを処理した後、再度first_keys_teamを更新
+        first_keys_team = generate_first_key_team(tradee_value_pair_dict)
+    
+    return players
+
+draft_pair_players(tradee_value_pair_dict, players)
+# print('aaaaaaaaa')
+# print(players)
+for prefix in teams:
+    players[prefix] = dict(sorted(players[prefix].items(), key=lambda item: (position_order[item[1][1]], -item[1][0])))
+    team_name = prefix  # チーム名を取得
+    sorted_players = players[team_name]
+
+    adeq_list_after = calculate_position_adequacy(team_name, sorted_players)
+
+
+# adeq_list_difを計算
+adeq_list_dif = {}
+adeq_list_dif_sum = {}
+for team in teams:
+    adeq_list_dif[team] = {}
+    for position in adeq_list[team]:
+        adeq_list_dif[team][position] = adeq_list_after[team][position] - adeq_list_before[team][position]
+    total = sum(adeq_list_dif[team].values())
+    adeq_list_dif[team]['合計'] = total
+
+
+adeq_list_dif['合計'] = {'捕手': 0, '内野手': 0, '外野手': 0, '投手': 0, '合計': 0}
+# 各ポジションの数値の合計値を計算して格納
+for player in adeq_list_dif.values():
+    if player is not adeq_list_dif['合計']:  # '合計' キーのエントリを無視
+        for position in ['捕手', '内野手', '外野手', '投手', '合計']:
+            adeq_list_dif['合計'][position] += player[position]
+
+
+json_data = json.dumps(adeq_list_dif, ensure_ascii=False)
+
+# print(json_data)
+
+print(adeq_list_dif['合計']['合計'])
