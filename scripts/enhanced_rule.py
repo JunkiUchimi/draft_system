@@ -35,6 +35,7 @@ def find_cycles(tentative_picks):
                     cycle_start = cycle.index(current_team)
                     cycles.append(cycle[cycle_start:])
                     break
+    # print(cycles)
     return cycles
 
 # 指名した選手の所属球団を返す関数
@@ -170,6 +171,7 @@ def find_pair_cycles(first_keys_team):
                     cycle_start = cycle.index(current_team)
                     pair_cycles.append(cycle[cycle_start:])
                     break
+    # print(pair_cycles)
     return pair_cycles
 
 # print(tradee_value_pair_dict)
@@ -229,12 +231,19 @@ adeq_list_dif['合計'] = {'捕手': 0, '内野手': 0, '外野手': 0, '投手'
 # 各ポジションの数値の合計値を計算して格納
 for player in adeq_list_dif.values():
     if player is not adeq_list_dif['合計']:  # '合計' キーのエントリを無視
-        for position in ['捕手', '内野手', '外野手', '投手', '合計']:
-            adeq_list_dif['合計'][position] += player[position]
+        # for position in ['捕手', '内野手', '外野手', '投手', '合計']:
+        #     adeq_list_dif['合計'][position] += player[position]
+        adeq_list_dif['合計']["捕手"] += player["捕手"] * 2
+        adeq_list_dif['合計']["内野手"] += player["内野手"] * 4
+        adeq_list_dif['合計']["外野手"] += player["外野手"] * 3
+        adeq_list_dif['合計']["投手"] += player["投手"] * 8
+        # adeq_list_dif['合計']["合計"] += player["合計"]
 
+adeq_list_dif['合計']['合計'] = adeq_list_dif['合計']['捕手'] + adeq_list_dif['合計']['内野手'] + adeq_list_dif['合計']['外野手'] + adeq_list_dif['合計']['投手']
 
 json_data = json.dumps(adeq_list_dif, ensure_ascii=False)
 
 print(json_data)
 
 # print(adeq_list_dif['合計']['合計'])
+# print(adeq_list_dif['a']['合計'])

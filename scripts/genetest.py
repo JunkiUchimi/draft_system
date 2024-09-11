@@ -3,10 +3,12 @@ import json
 import copy
 
 
+
 # 設定ファイルを読み込む
 with open('config/config.json', 'r', encoding='utf-8') as config_file:
     config = json.load(config_file)
 
+use_random_set = config['random_set']  # ここをTrueにするとランダムセット、Falseにすると従来の設定を使用
 # Initialize the global variables
 tradee = {}      # トレード対象の選手を格納する辞書
 adeq_list = {}   # 各球団のポジション充実度を格納する辞書
@@ -128,7 +130,29 @@ def choose_tradees(sorted_players, team_name, adeq_list):
     adeq_pit = adeq_list[team_name]["投手"]
     # 上位2つの数値を見つける
     # ポジション, ポジション充実度, 候補の候補選手の配列番号（ここから充実度の高いポジションの2人が選ばれる）
-    adeq_values = [("捕手", adeq_cat, config['cat_number']), ("内野手", adeq_inf, config['inf_number']), ("外野手", adeq_out, config['out_number']), ("投手", adeq_pit, config['pit_number'])]
+    # adeq_valuesを設定
+    if use_random_set:
+        # ランダムセットを選ぶ
+        selected_set = random.choice(config['sets'])
+    else:
+        # 従来の設定を使用
+        selected_set = {
+            "cat_number": config['cat_number'],
+            "inf_number": config['inf_number'],
+            "out_number": config['out_number'],
+            "pit_number": config['pit_number']
+        }
+    adeq_values = [
+        ("捕手", adeq_cat, selected_set['cat_number']),
+        ("内野手", adeq_inf, selected_set['inf_number']),
+        ("外野手", adeq_out, selected_set['out_number']),
+        ("投手", adeq_pit, selected_set['pit_number'])
+    ]
+    if team_name == 'a':
+        adeq_values = [("捕手", adeq_cat, config['a_cat_number']), ("内野手", adeq_inf, config['a_inf_number']), ("外野手", adeq_out, config['a_out_number']), ("投手", adeq_pit, config['a_pit_number'])]
+    else:
+        adeq_values = [("捕手", adeq_cat, config['cat_number']), ("内野手", adeq_inf, config['inf_number']), ("外野手", adeq_out, config['out_number']), ("投手", adeq_pit, config['pit_number'])]
+
     top_two = sorted(adeq_values, key=lambda x: x[1], reverse=True)[:2]
     # added_player_keysを生成
     added_player_keys = [key for idx, key in enumerate(sorted_players) if idx in {top_two[0][2], top_two[1][2]}]

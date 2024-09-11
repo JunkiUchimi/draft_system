@@ -8,7 +8,7 @@ def run_enhanced_rule():
     return float(result.stdout.strip())
 
 def main():
-    num_runs = 500
+    num_runs = 200
     results = []
 
     for _ in range(num_runs):
@@ -19,7 +19,7 @@ def main():
     print(f'Average result after {num_runs} runs: {average_result}')
 
 def main2():
-    num_runs = 100
+    num_runs = 200
     results = []
 
     for _ in range(num_runs):
@@ -29,5 +29,5 @@ def main2():
     average_result = sum(results) / num_runs
     print(f'Average result after {num_runs} runs: {average_result}')
 
-# main()
+main()
 main2()

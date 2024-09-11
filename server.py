@@ -10,6 +10,14 @@ def run_script(script_path):
     result = subprocess.run(['python', script_path], capture_output=True, text=True)
     return result.stdout
 
+@app.route('/get_config')
+def get_config():
+    try:
+        with open('config/config.json') as config_file:
+            config_data = json.load(config_file)
+        return jsonify(config_data), 200
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
 
 @app.route('/update_config', methods=['POST'])
 def update_config():

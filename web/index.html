@@ -36,7 +36,14 @@
     <div id="output">読み込み中...</div>
 
     <h2>設定値の編集</h2>
+    <h4>捕手:0~7, 内野手:8~23, 外野手24~35, 投手:36~67</h4>
     <form id="configForm">
+        <label for="random_set">選手のランダム抽出の適用:</label>
+        <select id="random_set" name="random_set">
+            <option value="False">False</option>
+            <option value="True">True</option>
+        </select><br>
+
         <label for="multiplier_1">上位1/4の重み付け:</label>
         <input type="number" id="multiplier_1" name="multiplier_1" value="13"><br>
 
@@ -61,6 +68,18 @@
 
         <label for="pit_number">選出する投手の番号:</label>
         <input type="number" id="pit_number" name="pit_number" value="46"><br>
+
+        <label for="a_cat_number">(a)選出する捕手の番号:</label>
+        <input type="number" id="a_cat_number" name="a_cat_number" value="2"><br>
+
+        <label for="a_inf_number">(a)選出する内野手の番号:</label>
+        <input type="number" id="a_inf_number" name="a_inf_number" value="13"><br>
+
+        <label for="a_out_number">(a)選出する外野手の番号:</label>
+        <input type="number" id="a_out_number" name="a_out_number" value="27"><br>
+
+        <label for="a_pit_number">(a)選出する投手の番号:</label>
+        <input type="number" id="a_pit_number" name="a_pit_number" value="46"><br>
 
         <button type="button" onclick="updateConfig()">設定を更新</button>
 
@@ -127,7 +146,14 @@
         }
 
         async function updateConfig() {
-            const configData = {
+            // まず現在の config.json を取得
+            const currentConfigResponse = await fetch('/get_config');
+            const currentConfig = await currentConfigResponse.json();
+
+            // 他の設定を更新
+            const updatedConfig = {
+                ...currentConfig,  // 現在の設定を保持
+                random_set: document.getElementById('random_set').value,
                 multiplier_1: parseInt(document.getElementById('multiplier_1').value, 10),
                 multiplier_2: parseInt(document.getElementById('multiplier_2').value, 10),
                 multiplier_3: parseInt(document.getElementById('multiplier_3').value, 10),
@@ -136,16 +162,22 @@
                 inf_number: parseInt(document.getElementById('inf_number').value, 10),
                 out_number: parseInt(document.getElementById('out_number').value, 10),
                 pit_number: parseInt(document.getElementById('pit_number').value, 10),
-
-                
+                a_cat_number: parseInt(document.getElementById('a_cat_number').value, 10),
+                a_inf_number: parseInt(document.getElementById('a_inf_number').value, 10),
+                a_out_number: parseInt(document.getElementById('a_out_number').value, 10),
+                a_pit_number: parseInt(document.getElementById('a_pit_number').value, 10)
             };
 
+            // `sets` 部分は currentConfig から変更しない
+            updatedConfig.sets = currentConfig.sets;
+
+            // 更新された設定をサーバーに送信
             const response = await fetch('/update_config', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(configData)
+                body: JSON.stringify(updatedConfig)
             });
 
             if (response.ok) {
