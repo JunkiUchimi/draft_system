@@ -2,8 +2,10 @@
 
 import tradee_value_calculation, genetest, copy, pprint, json
 from genetest import players, teams, adeq_list, calculate_position_adequacy, adeq_list_before
-from tradee_value_calculation import tradee_value_dict
-tradee_value_dict = tradee_value_calculation.tradee_value_dict
+from tradee_value_calculation import cal_tradee_value, position_order, tradee  # 必要な関数と変数をインポート
+
+# 関数を呼び出して tradee_value_dict を取得
+tradee_value_dict = cal_tradee_value(teams, tradee, players, adeq_list_before, position_order)
 
 destination = {chr(i): {} for i in range(ord('a'), ord('m'))}
 adeq_list_after = {}   # 各球団のポジション充実度を格納する辞書
@@ -47,15 +49,25 @@ def get_team_of_player(player_id):
     return team
 
 # 獲得された選手を各球団のpreferred_dict配列から取り除く関数
-def remove_player_from_preferred_dict(preferred_dict, player_id):
+def remove_player_from_preferred_dict(preferred_dict, tradee_value_dict, player_id):
     for team, preferred in preferred_dict.items():   #.items()で辞書型を('b', ['p_c1', 'p_a1']),のようにする
         if player_id in preferred:
             preferred.remove(player_id)
+        if player_id in tradee:
+            del tradee[player_id]  # 'del'を使って辞書から削除
+    # tradee_value_dictから選手を削除
+    for team, players in tradee_value_dict.items():
+        if player_id in players:
+            del players[player_id]
+    # print(tradee)  
 
 # できたサイクルを元に実際に選手の移籍を行う関数
 def draft_players(tradee_value_dict, players):
-    preferred_dict = generate_preferred_dict(tradee_value_dict)
+    
     while True:
+        tradee_value_dict = cal_tradee_value(teams, tradee, players, adeq_list_before, position_order)
+        preferred_dict = generate_preferred_dict(tradee_value_dict)
+        # print(preferred_dict)
         tentative_picks = {}
         for team, preferred in preferred_dict.items():
             if preferred:
@@ -73,29 +85,16 @@ def draft_players(tradee_value_dict, players):
                 player_id = tentative_picks[team]
                 if team in tradee_value_dict and player_id in tradee_value_dict[team]:
                     player_info = tradee_value_dict[team][player_id][:2]
-                    tradee_temp[team][player_id] = player_info
-                remove_player_from_preferred_dict(preferred_dict, player_id)
-
-        # 仮指名をリセットして次のサイクルのチェック
-        for team in list(tentative_picks.keys()):
-            if team in preferred_dict and preferred_dict[team]:
-                tentative_picks[team] = preferred_dict[team][0]
-            else:
-                tentative_picks.pop(team, None)
-    
+                    players[team][player_id] = player_info
+                remove_player_from_preferred_dict(preferred_dict, tradee_value_dict, player_id)  # tradee_value_dictも更新
+        # print(preferred_dict)
     return players
 
-
-position_order = {
-    '捕手': 1,
-    '内野手': 2,
-    '外野手': 3,
-    '投手': 4
-}
 
 # ここから新たなルールを追加
 # 関数を呼び出して結果を取得
 updated_players = draft_players(tradee_value_dict, players)
+
 tradee_value_dict = {}
 team_tradee_values = {chr(i): {} for i in range(ord('a'), ord('m'))}
 for team in teams:
@@ -106,9 +105,9 @@ for team in teams:
     for cal_team, infos in tradee_temp.items():
         # position = player_info[1]  # 選手のポジションを取得
         # 各選手のplayer_idとその情報をループで回す
-        for player_id, player_info in infos.items():
-            # players[team] に player_id をキーとして追加
-            players[team][player_id] = player_info
+        # for player_id, player_info in infos.items():
+        #     # players[team] に player_id をキーとして追加
+        #     players[team][player_id] = player_info
 
         sorted_players = dict(sorted(players[team].items(), key=lambda item: (position_order[item[1][1]], -item[1][0])))
         for player_id, player_info in infos.items():
@@ -243,7 +242,8 @@ adeq_list_dif['合計']['合計'] = adeq_list_dif['合計']['捕手'] + adeq_lis
 
 json_data = json.dumps(adeq_list_dif, ensure_ascii=False)
 
-print(json_data)
+# print(json_data)
 
-# print(adeq_list_dif['合計']['合計'])
-# print(adeq_list_dif['a']['合計'])
+print(adeq_list_dif['合計']['合計'])
+adeq_list_dif['a']['合計'] = adeq_list_dif['a']['捕手'] * 2 + adeq_list_dif['a']['内野手'] * 4 + adeq_list_dif['a']['外野手'] * 3 + adeq_list_dif['a']['投手'] * 8
+print(adeq_list_dif['a']['合計'])

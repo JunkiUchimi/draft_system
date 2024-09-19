@@ -175,11 +175,12 @@ for player in adeq_list_dif.values():
 # 結果の確認
 adeq_list_dif['合計']['合計'] = adeq_list_dif['合計']['捕手'] + adeq_list_dif['合計']['内野手'] + adeq_list_dif['合計']['外野手'] + adeq_list_dif['合計']['投手']
 
-# print(adeq_list_dif['a']['合計'])
-# print(adeq_list_dif['合計']['合計'])
+print(adeq_list_dif['合計']['合計'])
 json_data = json.dumps(adeq_list_dif, ensure_ascii=False)
-print(json_data)
+# print(json_data)
 
 # total_sum = sum(sum(positions.values()) for positions in adeq_list_dif.values())  
 
 # print(total_sum)
+adeq_list_dif['a']['合計'] = adeq_list_dif['a']['捕手'] * 2 + adeq_list_dif['a']['内野手'] * 4 + adeq_list_dif['a']['外野手'] * 3 + adeq_list_dif['a']['投手'] * 8
+print(adeq_list_dif['a']['合計'])
